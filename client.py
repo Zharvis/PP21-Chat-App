@@ -5,15 +5,27 @@ from _thread import start_new_thread
 host = '127.0.0.1'
 port = 5555
 sock = socket.socket()
-sock.connect((host, port))
+try:
+    sock.connect((host, port))
+except ConnectionRefusedError:
+    print("Cannot reach server. Closing...")
+    exit()
 
 def recv_msg():
-    while True:
-        msg = sock.recv(1024).decode()+'\n'
-        print(msg)
+    try:
+        while True:
+            msg = sock.recv(1024).decode()+'\n'
+            print(msg)
+    except ConnectionResetError:
+        print("Server closed. Closing...")
+        exit()
 
 start_new_thread(recv_msg, ())
 
-while True: #Sendeschleife
-    msg = input().encode()
-    sock.send(msg)
+try:
+    while True: #Sendeschleife
+        msg = input("[YOU]: ")
+        sock.send(msg.encode())
+except ConnectionResetError:
+        print("Server closed. Closing...")
+        exit()
