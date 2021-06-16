@@ -30,11 +30,11 @@ def recv_msg():
         exit()
 
 start_new_thread(recv_msg, ())
-sleep(1)
+sleep(0.5)
 
 try:
     while True: #Sendeschleife
-        msg = input("[YOU]: ")
+        msg = input()
         sock.send(msg.encode())
 except ConnectionResetError:
         print("Server closed. Closing...")
